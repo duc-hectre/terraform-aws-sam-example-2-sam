@@ -11,7 +11,7 @@ Parameters:
   AppName:
     Type: String
     Description: Name of application (no spaces). Value must be globally unique
-    Default: tf_sam_a2_demo
+    Default: todo-a2
   Environment:
     Type: String
     Description: Name of application (no spaces). Value must be globally unique
@@ -19,11 +19,19 @@ Parameters:
   DynamoDbName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/tf_sam_a2_demo/dynamodb_name
+    Default: /dev/todo-a2/dynamodb_name
   SQSQueueName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/tf_sam_a2_demo/sqs_queue_name
+    Default: /dev/todo-a2/sqs_queue_name
+  DynamoDbArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/dynamodb_arn
+  SQSQueueArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/sqs_queue_arn
 
 Resources:
   TodoFunction:
@@ -38,9 +46,9 @@ Resources:
         - x86_64
       Policies: 
         - DynamoDBCrudPolicy:
-            TableName: !Ref DynamoDbName
+            TableName: !Ref DynamoDbArn
         - SQSSendMessagePolicy:
-            QueueName: !Ref SQSQueueName
+            QueueName: !Ref SQSQueueArn
       Events:
         AnyTodoApi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -70,12 +78,12 @@ Resources:
         - x86_64
       Policies: 
         - DynamoDBCrudPolicy:
-            TableName: !Ref DynamoDbName
+            TableName: !Ref DynamoDbArn
       Events:
         TodoQueue:
           Type: SQS
           Properties:
-            Queue: !Ref SQSQueueName
+            Queue: !Ref SQSQueueArn
             BatchSize: 10
             Enabled: false
       Environment:
