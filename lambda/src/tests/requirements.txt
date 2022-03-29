@@ -1,0 +1,4 @@
+simplejson
+pytest
+pytest-mock
+boto3

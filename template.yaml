@@ -1,0 +1,97 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Todo lambda function
+Globals:
+  Function:
+    Timeout: 3
+
+
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: tf_sam_a2_demo
+  Environment:
+    Type: String
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: dev
+  DynamoDbName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/tf_sam_a2_demo/dynamodb_name
+  SQSQueueName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/tf_sam_a2_demo/sqs_queue_name
+
+Resources:
+  TodoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: 
+        Fn::Sub: ${Environment}_${AppName}_todo_handler
+      CodeUri: ./lambda/src/todo_handler/
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDbName
+        - SQSSendMessagePolicy:
+            QueueName: !Ref SQSQueueName
+      Events:
+        AnyTodoApi:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /todo
+            Method: any        
+      Environment:
+        Variables:
+          DYNAMO_TABLE_NAME: "tf_sam_todo_table"
+          SQS_URL: "https://sqs.ap-southeast-1.amazonaws.com/983670951732/rf_sam_todo_queue"
+  # HelloTable:
+  #   Type: AWS::Serverless::SimpleTable
+  #   Properties:
+  #     # PrimaryKey: PrimaryKeyObject
+  #     # ProvisionedThroughput: ProvisionedThroughput
+  #     # SSESpecification: SSESpecification
+  #     TableName: tf_sam_todo_table
+  TodoPersistFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: 
+        Fn::Sub: ${Environment}_${AppName}_todo_persist
+      CodeUri: ./lambda/src/todo_persist/
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Architectures:
+        - x86_64
+      Policies: 
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DynamoDbName
+      Events:
+        TodoQueue:
+          Type: SQS
+          Properties:
+            Queue: !Ref SQSQueueName
+            BatchSize: 10
+            Enabled: false
+      Environment:
+        Variables:
+          DYNAMO_TABLE_NAME: "tf_sam_todo_table"      
+
+Outputs:  
+  TodoFunction:
+    Description: "Todo Api Handler Lambda Function ARN"
+    Value: !GetAtt TodoFunction.Arn
+  TodoFunctionIamRole:
+    Description: "Implicit IAM Role created for Todo Api Handler function"
+    Value: !GetAtt TodoFunctionIamRole.Arn
+  TodoPersistFunction:
+    Description: "Todo Persistent Lambda Function ARN"
+    Value: !GetAtt TodoPersistFunction.Arn
+  TodoPersistFunctionIamRole:
+    Description: "Implicit IAM Role created for Todo Persistent function"
+    Value: !GetAtt TodoPersistFunctionIamRole.Arn
