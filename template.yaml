@@ -94,12 +94,12 @@ Outputs:
   TodoFunction:
     Description: "Todo Api Handler Lambda Function ARN"
     Value: !GetAtt TodoFunction.Arn
-  TodoFunctionIamRole:
-    Description: "Implicit IAM Role created for Todo Api Handler function"
-    Value: !GetAtt TodoFunctionIamRole.Arn
+  # TodoFunctionIamRole:
+  #   Description: "Implicit IAM Role created for Todo Api Handler function"
+  #   Value: !GetAtt TodoFunctionIamRole.Arn
   TodoPersistFunction:
     Description: "Todo Persistent Lambda Function ARN"
     Value: !GetAtt TodoPersistFunction.Arn
-  TodoPersistFunctionIamRole:
-    Description: "Implicit IAM Role created for Todo Persistent function"
-    Value: !GetAtt TodoPersistFunctionIamRole.Arn
+  # TodoPersistFunctionIamRole:
+  #   Description: "Implicit IAM Role created for Todo Persistent function"
+  #   Value: !GetAtt TodoPersistFunctionIamRole.Arn
