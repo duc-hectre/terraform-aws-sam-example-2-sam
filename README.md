@@ -41,6 +41,7 @@ Following the steps below to get the project starts.
    - Install AWS CLI tool [Installing or updating the latest version of the AWS CLI - AWS Command Line Interface ](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
    - Install AWS SAM CLI tool [Installing the AWS SAM CLI - AWS Serverless Application Model ](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+   - Configure aws credential.
 
    - Install Docker - that use to simulate the AWS environment for debugging
 
