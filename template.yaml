@@ -38,7 +38,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       FunctionName: 
-        Fn::Sub: ${Environment}_${AppName}_todo_handler
+        Fn::Sub: "${Environment}_${AppName}_todo_handler"
       CodeUri: ./lambda/src/todo_handler/
       Handler: main.lambda_handler
       Runtime: python3.8
@@ -57,7 +57,7 @@ Resources:
             Method: any        
       Environment:
         Variables:
-          DYNAMO_TABLE_NAME: "tf_sam_todo_table"
+          DYNAMO_TABLE_NAME: !Ref DynamoDbName
           SQS_URL: 
             Fn::Sub: "https://sqs.ap-southeast-1.amazonaws.com/983670951732/${SQSQueueName}"
   # HelloTable:
@@ -71,7 +71,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       FunctionName: 
-        Fn::Sub: ${Environment}_${AppName}_todo_persist
+        Fn::Sub: "${Environment}_${AppName}_todo_persist"
       CodeUri: ./lambda/src/todo_persist/
       Handler: main.lambda_handler
       Runtime: python3.8
