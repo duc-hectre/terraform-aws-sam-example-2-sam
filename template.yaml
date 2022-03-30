@@ -46,9 +46,9 @@ Resources:
         - x86_64
       Policies: 
         - DynamoDBCrudPolicy:
-            TableName: !Ref DynamoDbArn
+            TableName: !Ref DynamoDbName
         - SQSSendMessagePolicy:
-            QueueName: !Ref SQSQueueArn
+            QueueName: !Ref SQSQueueName
       Events:
         AnyTodoApi:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -58,7 +58,8 @@ Resources:
       Environment:
         Variables:
           DYNAMO_TABLE_NAME: "tf_sam_todo_table"
-          SQS_URL: "https://sqs.ap-southeast-1.amazonaws.com/983670951732/rf_sam_todo_queue"
+          SQS_URL: 
+            Fn::Sub: "https://sqs.ap-southeast-1.amazonaws.com/983670951732/${SQSQueueName}"
   # HelloTable:
   #   Type: AWS::Serverless::SimpleTable
   #   Properties:
@@ -78,7 +79,7 @@ Resources:
         - x86_64
       Policies: 
         - DynamoDBCrudPolicy:
-            TableName: !Ref DynamoDbArn
+            TableName: !Ref DynamoDbName
       Events:
         TodoQueue:
           Type: SQS
@@ -88,18 +89,18 @@ Resources:
             Enabled: false
       Environment:
         Variables:
-          DYNAMO_TABLE_NAME: "tf_sam_todo_table"      
+          DYNAMO_TABLE_NAME: !Ref DynamoDbName     
 
 Outputs:  
   TodoFunction:
     Description: "Todo Api Handler Lambda Function ARN"
     Value: !GetAtt TodoFunction.Arn
-  # TodoFunctionIamRole:
-  #   Description: "Implicit IAM Role created for Todo Api Handler function"
-  #   Value: !GetAtt TodoFunctionIamRole.Arn
+  TodoFunctionRole:
+    Description: "Implicit  Role created for Todo Api Handler function"
+    Value: !GetAtt TodoFunctionRole.Arn
   TodoPersistFunction:
     Description: "Todo Persistent Lambda Function ARN"
     Value: !GetAtt TodoPersistFunction.Arn
-  # TodoPersistFunctionIamRole:
-  #   Description: "Implicit IAM Role created for Todo Persistent function"
-  #   Value: !GetAtt TodoPersistFunctionIamRole.Arn
+  TodoPersistFunctionRole:
+    Description: "Implicit  Role created for Todo Persistent function"
+    Value: !GetAtt TodoPersistFunctionRole.Arn
