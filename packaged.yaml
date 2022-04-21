@@ -1,0 +1,103 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'Todo lambda function
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Parameters:
+  AppName:
+    Type: String
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: todo-a2
+  Environment:
+    Type: String
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: dev
+  DynamoDbName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/dynamodb_name
+  SQSQueueName:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/sqs_queue_name
+  DynamoDbArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/dynamodb_arn
+  SQSQueueArn:
+    Type: AWS::SSM::Parameter::Value<String>
+    Description: Name of application (no spaces). Value must be globally unique
+    Default: /dev/todo-a2/sqs_queue_arn
+Resources:
+  TodoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${Environment}_${AppName}_todo_handler
+      CodeUri: s3://dev-todo-a2-sam-artifact-bucket/28d8cf641ad191a521f46ff4eb39403f
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: DynamoDbArn
+      - SQSSendMessagePolicy:
+          QueueName:
+            Ref: SQSQueueArn
+      Events:
+        AnyTodoApi:
+          Type: Api
+          Properties:
+            Path: /todo
+            Method: any
+      Environment:
+        Variables:
+          DYNAMO_TABLE_NAME: tf_sam_todo_table
+          SQS_URL: https://sqs.ap-southeast-1.amazonaws.com/983670951732/rf_sam_todo_queue
+    Metadata:
+      SamResourceId: TodoFunction
+  TodoPersistFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${Environment}_${AppName}_todo_persist
+      CodeUri: s3://dev-todo-a2-sam-artifact-bucket/bfc5ab6312ea2e99f4f7bff1f055e45e
+      Handler: main.lambda_handler
+      Runtime: python3.8
+      Architectures:
+      - x86_64
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: DynamoDbArn
+      Events:
+        TodoQueue:
+          Type: SQS
+          Properties:
+            Queue:
+              Ref: SQSQueueArn
+            BatchSize: 10
+            Enabled: false
+      Environment:
+        Variables:
+          DYNAMO_TABLE_NAME: tf_sam_todo_table
+    Metadata:
+      SamResourceId: TodoPersistFunction
+Outputs:
+  TodoFunction:
+    Description: Todo Api Handler Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - TodoFunction
+      - Arn
+  TodoPersistFunction:
+    Description: Todo Persistent Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - TodoPersistFunction
+      - Arn

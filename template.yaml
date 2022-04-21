@@ -19,26 +19,25 @@ Parameters:
   DynamoDbName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/todo-a2/dynamodb_name
+    Default: !Sub "/${Environment}/${AppName}/dynamodb_name"
   SQSQueueName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/todo-a2/sqs_queue_name
+    Default: !Sub "/${Environment}/${AppName}/sqs_queue_name"
   DynamoDbArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/todo-a2/dynamodb_arn
+    Default: !Sub "/${Environment}/${AppName}/dynamodb_arn"
   SQSQueueArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: /dev/todo-a2/sqs_queue_arn
+    Default: !Sub "/${Environment}/${AppName}/sqs_queue_arn"
 
 Resources:
   TodoFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: 
-        Fn::Sub: "${Environment}_${AppName}_todo_handler"
+      FunctionName: !Sub "${Environment}_${AppName}_todo_handler"
       CodeUri: ./lambda/src/todo_handler/
       Handler: main.lambda_handler
       Runtime: python3.8
@@ -71,8 +70,7 @@ Resources:
   TodoPersistFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      FunctionName: 
-        Fn::Sub: "${Environment}_${AppName}_todo_persist"
+      FunctionName: !Sub "${Environment}_${AppName}_todo_persist"
       CodeUri: ./lambda/src/todo_persist/
       Handler: main.lambda_handler
       Runtime: python3.8
