@@ -19,19 +19,19 @@ Parameters:
   DynamoDbName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/${Environment}/${AppName}/dynamodb_name"
+    Default: !Sub "/dev/todo-a2/dynamodb_name"
   SQSQueueName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/${Environment}/${AppName}/sqs_queue_name"
+    Default: !Sub "/dev/todo-a2/sqs_queue_name"
   DynamoDbArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/${Environment}/${AppName}/dynamodb_arn"
+    Default: !Sub "/dev/todo-a2/dynamodb_arn"
   SQSQueueArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/${Environment}/${AppName}/sqs_queue_arn"
+    Default: !Sub "/dev/todo-a2/sqs_queue_arn"
 
 Resources:
   TodoFunction:
@@ -58,8 +58,7 @@ Resources:
       Environment:
         Variables:
           DYNAMO_TABLE_NAME: !Ref DynamoDbName
-          SQS_URL: 
-            Fn::Sub: "https://sqs.ap-southeast-1.amazonaws.com/983670951732/${SQSQueueName}"
+          SQS_URL: !Sub "https://sqs.ap-southeast-1.amazonaws.com/983670951732/${SQSQueueName}"
   # HelloTable:
   #   Type: AWS::Serverless::SimpleTable
   #   Properties:
