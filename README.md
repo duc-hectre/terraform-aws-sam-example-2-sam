@@ -6,7 +6,7 @@ The approach is:
 - Use Terraform:
   - To initiate & provision all the surrounding infrastructures such as sqs, dynamodb, code pipeline,... and corresponding IAM roles, policies
   - Use AWS Code Pipeline to integrate with Terraform image in docker-hup for CI/CD action.
-  - There is a separated github repository for this part.
+  - There is a separated github repository for this part. Can find that repo here [Terraform part](https://github.com/duc-hectre/terraform-aws-sam-example-2-tf)
 - Use SAM:
   - To develop, test & debug the source code of lambda function.
   - Build & deploy for API Gateway, Lambda as well as related IAM roles, policies.
@@ -41,6 +41,7 @@ Following the steps below to get the project starts.
    - Install AWS CLI tool [Installing or updating the latest version of the AWS CLI - AWS Command Line Interface ](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
    - Install AWS SAM CLI tool [Installing the AWS SAM CLI - AWS Serverless Application Model ](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html)
+   - Configure aws credential.
 
    - Install Docker - that use to simulate the AWS environment for debugging
 
@@ -252,7 +253,7 @@ Following the steps below to get the project starts.
 
    Refer to the image below for the SAM pipeline
 
-   ![SAM CI/CD](https://github.com/duc-hectre/duc-hectre/blob/main/tf_1_tf_cicd_pipeline.png)
+   ![SAM CI/CD](https://github.com/duc-hectre/duc-hectre/blob/main/tf_1_sam_cicd_pipeline.png)
 
 6. **Destroy**
 
