@@ -19,19 +19,19 @@ Parameters:
   DynamoDbName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/dev/todo-a2/dynamodb_name"
+    Default: "/dev/todo-a2/dynamodb_name"
   SQSQueueName:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/dev/todo-a2/sqs_queue_name"
+    Default: "/dev/todo-a2/sqs_queue_name"
   DynamoDbArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/dev/todo-a2/dynamodb_arn"
+    Default: "/dev/todo-a2/dynamodb_arn"
   SQSQueueArn:
     Type: AWS::SSM::Parameter::Value<String>
     Description: Name of application (no spaces). Value must be globally unique
-    Default: !Sub "/dev/todo-a2/sqs_queue_arn"
+    Default: "/dev/todo-a2/sqs_queue_arn"
 
 Resources:
   TodoFunction:
